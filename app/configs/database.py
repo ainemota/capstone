@@ -17,3 +17,4 @@ def init_app(app):
 
     # importar todas as model para que as tabelas sejam criadas
     from app.models.product_model import Product
+    from app.models.address_model import Address
