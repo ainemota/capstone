@@ -5,6 +5,8 @@
 from http import HTTPStatus
 from flask import request
 from app.configs.database import db
+from app.exceptions.InvalidIa import InvalidId
+from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
 from app.models.product_model import Product
 
@@ -12,15 +14,15 @@ from app.models.product_model import Product
 def create_product():
     data = request.get_json()
 
-    if 'address_id' in data.keys():
-        new_product = Product(**data)
-    else:
-        address = data.pop('address')
-        product_address = Address(**address)
-        product_address.create()
-        data['address_id'] = product_address.id
-        new_product = Product(**data)
+    try:
+        data = Product.validate_address(data)
+        Product.validate_keys(data)
+    except InvalidKeys as e:
+        return e.message, HTTPStatus.BAD_REQUEST
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
 
+    new_product = Product(**data)
     db.session.add(new_product)
     db.session.commit()
   
