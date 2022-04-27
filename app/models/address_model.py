@@ -4,27 +4,27 @@ from app.configs.database import db
 from dataclasses import dataclass
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
-from app.exceptions.InvalidIa import InvalidId
+from app.exceptions.InvalidId import InvalidId
 
 from app.exceptions.InvalidKeys import InvalidKeys
 
 @dataclass
 class Address(db.Model):
     id: str
-    estado: str
-    cidade: str
-    rua: str
-    numero: str
-    complemento: str
+    state: str
+    city: str
+    street: str
+    number: str
+    complement: str
 
     __tablename__ = "addresses"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    estado = Column(String(20))
-    cidade = Column(String(20))
-    rua = Column(String(20))
-    numero = Column(String(8))
-    complemento = Column(String(20))
+    state = Column(String(20))
+    city = Column(String(20))
+    street = Column(String(20))
+    number = Column(String(8))
+    complement = Column(String(20))
 
     def create(self):
         session = current_app.db.session
