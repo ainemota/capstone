@@ -1,28 +1,28 @@
-from uuid import UUID
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
 from app.configs.database import db
 from dataclasses import dataclass
-from app.models.address_model import Address
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects.postgresql import UUID
+from app.models.address_model import Address
+
 
 @dataclass
 class Product(db.Model):
     id: int
-    name:str
-    status: str
+    name: str
     description: str
-    prince: float
+    status: str
+    price: float
     address: Address
+    # locator_id: str
     # room: Room
-    # locator: User
 
     __tablename__ = "products"
 
     id = Column(Integer, primary_key=True)
-    name = Column(String)
-    status = Column(String(12))
-    description = Column(String(100))
-    prince = Column(Float)
-    address_id = Column(UUID, ForeignKey("addresses.id"), nullable=True)
-    address = relationship("Address", backref=backref("product", uselist=False))
+    name = Column(String(20))
+    description = Column(Text)
+    status = Column(String(15))
+    price = Column(Float)
+    address_id = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=True)
+    address = relationship("Address", backref="products")
