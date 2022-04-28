@@ -32,18 +32,34 @@ class Address(db.Model):
         session.commit()
     
     @staticmethod
-    def validate_keys(data):
-        expecte_keys_set = {"estado", "cidade", "rua", "numero", "complemento"}
+    def validate_keys(data, update=False):
+        expecte_keys_set = {"state", "city", "street", "number", "complement"}
         received_keys_set = set(data.keys())
 
-        if received_keys_set.symmetric_difference(expecte_keys_set):
-            list_exp_keys = list(expecte_keys_set)
-            list_rec_keys = list(received_keys_set)
-            raise InvalidKeys(receivedKeys=list_rec_keys, expectedKeys=list_exp_keys)
+        if update:
+            if not received_keys_set.issubset(expecte_keys_set):
+                list_exp_keys = list(expecte_keys_set)
+                list_rec_keys = list(received_keys_set)
+                raise InvalidKeys(receivedKeys=list_rec_keys, expectedKeys=list_exp_keys)
+        else:
+            if received_keys_set.symmetric_difference(expecte_keys_set):
+                list_exp_keys = list(expecte_keys_set)
+                list_rec_keys = list(received_keys_set)
+                raise InvalidKeys(receivedKeys=list_rec_keys, expectedKeys=list_exp_keys)
 
     @classmethod
-    def validate_address_id(cls, address_id):
+    def find_and_validate_id(cls, address_id):
         address = cls.query.get(address_id)
 
         if not address:
             raise InvalidId(modelName="address")
+        else:
+            return address
+
+    @staticmethod
+    def update(data, address):
+        for key, value in data.items():
+            setattr(address, key, value)
+        
+        db.session.add(address)
+        db.session.commit()

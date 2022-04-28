@@ -39,7 +39,7 @@ def update_product(product_id):
 
     try:
         Product.validate_keys(data, update=True)
-        product = Product.find_and_validate(product_id)
+        product = Product.find_and_validate_id(product_id)
         Product.update(data, product)
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST

@@ -50,7 +50,7 @@ class Product(db.Model):
     @staticmethod
     def validate_address(data: dict):
         if 'address_id' in data.keys():
-            Address.validate_address_id(data['address_id'])
+            Address.find_and_validate_id(data['address_id'])
             return data
         else:
             address = data.pop('address')
@@ -60,7 +60,7 @@ class Product(db.Model):
             return data
 
     @classmethod
-    def find_and_validate(cls, product_id):
+    def find_and_validate_id(cls, product_id):
         product = cls.query.get(product_id)
 
         if not product:
