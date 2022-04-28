@@ -29,6 +29,7 @@ def retrive():
         session.commit()
 
     except:
+        # depurar os tipos de erros; colocar nas exceptions fazer o pull.
         return {"error": "email já existe."}, HTTPStatus.CONFLICT
 
     return jsonify(user), HTTPStatus.CREATED
