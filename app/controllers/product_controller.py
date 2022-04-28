@@ -60,3 +60,12 @@ def delete_product(product_id):
     db.session.commit()
 
     return {}, HTTPStatus.NO_CONTENT
+
+
+def specific_product(product_id):
+    try: 
+        product = Product.find_and_validate_id(product_id)
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
+    
+    return {"product": product}, HTTPStatus.OK

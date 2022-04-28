@@ -51,4 +51,11 @@ def delete_address(address_id):
 
     return {}, HTTPStatus.NO_CONTENT
 
+
+def specific_address(address_id):
+    try: 
+        address = Address.find_and_validate_id(address_id)
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
     
+    return {"address": address}, HTTPStatus.OK
