@@ -2,7 +2,7 @@ from flask import Blueprint
 from app.controllers import user_controller
 
 
-bp = Blueprint("user", __name__)
+bp = Blueprint("users", __name__)
 
 
 bp.get("/")(user_controller.get_all_users)
