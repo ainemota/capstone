@@ -2,6 +2,7 @@
 # caso o endereco nao seja enviado usar o endereco do usuario
 
 from http import HTTPStatus
+from itertools import product
 from flask import request
 from app.configs.database import db
 from app.exceptions.InvalidId import InvalidId
@@ -47,3 +48,15 @@ def update_product(product_id):
         return e.message, HTTPStatus.NOT_FOUND
     
     return {"updated_product": product}, HTTPStatus.OK
+
+
+def delete_product(product_id):
+    try: 
+        product = Product.find_and_validate_id(product_id)
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
+    
+    db.session.delete(product)
+    db.session.commit()
+
+    return {}, HTTPStatus.NO_CONTENT
