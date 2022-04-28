@@ -5,4 +5,3 @@ class InvalidKeys(Exception):
             "received_keys": receivedKeys
         } }
         super().__init__(self.message)
-

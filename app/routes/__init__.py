@@ -1,12 +1,7 @@
-from flask import Blueprint, Flask
-from app.routes.users_blueprint import bp as bp_user
+from flask import Blueprint
+from app.routes.products_blueprint import bp as bp_products
 from app.routes.addresses_blueprint import bp as bp_addresses
-
-
-bp_api = Blueprint("api", __name__)
-
-
-def init_app(app: Flask):
-    bp_api.register_blueprint(bp_user)
-    app.register_blueprint(bp_api)
+def init_app(app):
+    # registrar todas as blueprints criadas importando-as
+    app.register_blueprint(bp_products)
     app.register_blueprint(bp_addresses)

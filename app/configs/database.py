@@ -13,3 +13,6 @@ def init_app(app: Flask):
     #inicializa as models    
     from app.models.user_model import UserModel
     from app.models.address_model import Address
+    # importar todas as model para que as tabelas sejam criadas
+    from app.models.product_model import Product
+   
