@@ -63,3 +63,7 @@ class Address(db.Model):
         
         db.session.add(address)
         db.session.commit()
+
+    @staticmethod
+    def create_sql_rule():
+        pass
