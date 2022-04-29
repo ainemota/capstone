@@ -41,8 +41,6 @@ def patch_room(room_id):
     data = request.get_json()
 
     with db.session() as session:
-        session: Session
-
         room = session.query(RoomModel).get(room_id)
 
         for key, value in data.items():
@@ -59,8 +57,6 @@ def patch_room(room_id):
 @jwt_required()
 def delete_room(room_id):
     with db.session() as session:
-        session: Session
-
         room = session.query(RoomModel).get(room_id)
         session.delete(room)
         session.commit()

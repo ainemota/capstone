@@ -18,7 +18,7 @@ class RoomModel(db.Model):
     title = Column(String(150), nullable=False, unique=True)
     description = Column(String(300), nullable=False)
     status = Column(Boolean, nullable=False)
-    locator = Column(Integer, ForeignKey("users.id"), nullable=True)
+    locator = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
     address = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=False)
 
     @validates("title", "description", "status", "products")
