@@ -4,4 +4,4 @@ from flask import Flask
 
 def init_app(app: Flask):
     Migrate(app=app, db=app.db, compare_type=True)
-    
+
