@@ -71,7 +71,7 @@ class Product(db.Model):
     @staticmethod
     def update(data, product):
         for key, value in data.items():
-            setattr(product, key, value)
+                setattr(product, key, value)
         
         db.session.add(product)
         db.session.commit()
