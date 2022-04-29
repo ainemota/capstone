@@ -2,18 +2,18 @@
 from werkzeug.security import generate_password_hash, check_password_hash
 from app.configs.database import db
 from dataclasses import dataclass
-
+from uuid import uuid4
 
 @dataclass
 class UserModel(db.Model):
 
-    id: int
+    id: str
     name: str
     email: str
 
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
     name = db.Column(db.String, nullable=False)
     email = db.Column(db.String(80), nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=True)
