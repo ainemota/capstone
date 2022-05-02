@@ -62,6 +62,3 @@ class RoomModel(db.Model):
             raise TypeError
 
         return value
-
-
-

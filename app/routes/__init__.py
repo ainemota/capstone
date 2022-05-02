@@ -11,6 +11,3 @@ def init_app(app):
     app.register_blueprint(bp_products)
     app.register_blueprint(bp_addresses)
     app.register_blueprint(bp_rooms)
-
-
-
