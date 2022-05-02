@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 
 from app.models.room_model import RoomModel
 from app.models.address_model import Address
+from app.exceptions.InvalidId import InvalidId
+
 from ipdb import set_trace
 
 
@@ -69,7 +71,14 @@ def patch_room(room_id):
     user = get_jwt_identity()
     session: Session = db.session()
 
-    room = session.query(RoomModel).get(room_id)
+    try:
+        room = session.query(RoomModel).get(room_id)
+        if not room:
+            raise InvalidId(modelName="Room")
+
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
+
     address = session.query(Address).get(room.address_id)
 
     if str(room.locator_id) != user["id"]:
@@ -95,7 +104,14 @@ def delete_room(room_id):
     user = get_jwt_identity()
     session: Session = db.session()
 
-    room = session.query(RoomModel).get(room_id)
+    try:
+        room = session.query(RoomModel).get(room_id)
+        if not room:
+            raise InvalidId(modelName="Room")
+
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
+
     address = session.query(Address).get(room.address_id)
 
     room.is_the_owner(user)
@@ -110,7 +126,14 @@ def delete_room(room_id):
 
 @jwt_required()
 def get_by_id_room(room_id):
-    with db.session() as session:
+    session: Session = db.session()
+
+    try:
         room = session.query(RoomModel).get(room_id)
+        if not room:
+            raise InvalidId(modelName="Room")
+
+    except InvalidId as e:
+        return e.message, HTTPStatus.NOT_FOUND
 
     return jsonify(room), HTTPStatus.OK
