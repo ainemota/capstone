@@ -27,7 +27,7 @@ class Product(db.Model):
     description = Column(Text)
     status = Column(String(15))
     price = Column(Float)
-    # room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     address_id = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     address = relationship("Address", backref="products")

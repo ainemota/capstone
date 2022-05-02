@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session, Query
 from app.models.user_model import UserModel
 from flask_jwt_extended import create_access_token, jwt_required
 
+
 @jwt_required()
 def get_all_users():
     session: Session = current_app.db.session
@@ -15,7 +16,6 @@ def get_all_users():
         return [], HTTPStatus.OK
 
     return jsonify(user), HTTPStatus.OK
-
 
 
 def retrive():
@@ -47,13 +47,14 @@ def login():
     user: UserModel = session.query(UserModel).filter_by(email=data_2["email"]).first()
 
     if not user:
-       return {"error": "usuário não encontrado."}, HTTPStatus.NOT_FOUND
+        return {"error": "usuário não encontrado."}, HTTPStatus.NOT_FOUND
 
     if user.verify_password(data_2["password_hash"]):
         accessToken = create_access_token(identity=user, expires_delta=timedelta(minutes=60))
         return jsonify({"accessToken": accessToken}), HTTPStatus.OK
     else:
         return {"error": "Email ou Senha inválidos!"}, HTTPStatus.UNAUTHORIZED
+
 
 @jwt_required()
 def put_users(id: int):
@@ -75,6 +76,7 @@ def put_users(id: int):
         return {"error": "usuário não encontrado!"}, HTTPStatus.NOT_FOUND
 
     return jsonify(user), HTTPStatus.OK
+
 
 @jwt_required()
 def delete_user(id: int):
