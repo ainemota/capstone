@@ -9,8 +9,10 @@ from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
 from app.models.product_model import Product
+from flask_jwt_extended import jwt_required
 
 
+@jwt_required()
 def create_product():
     data = request.get_json()
 
@@ -32,6 +34,7 @@ def products():
     return {"products": products}, HTTPStatus.OK
 
 
+@jwt_required()
 def update_product(product_id):
     data = request.get_json()
 
@@ -47,6 +50,7 @@ def update_product(product_id):
     return {"updated_product": product}, HTTPStatus.OK
 
 
+@jwt_required()
 def delete_product(product_id):
     try: 
         product = Product.find_and_validate_id(product_id)
