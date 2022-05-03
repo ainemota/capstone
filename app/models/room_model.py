@@ -24,7 +24,12 @@ class RoomModel(db.Model):
     description = Column(String(300), nullable=False)
     status = Column(Boolean, nullable=False)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
-    address_id = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=False)
+    address_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("addresses.id"),
+        nullable=False,
+        cascade="all, delete-orphan",
+    )
 
     def create(self):
         session = db.session()
