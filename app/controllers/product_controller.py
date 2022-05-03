@@ -15,12 +15,9 @@ def create_product():
     data = request.get_json()
 
     try:
-        data = Product.validate_address(data)
         Product.validate_keys(data)
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST
-    except InvalidId as e:
-        return e.message, HTTPStatus.NOT_FOUND
 
     new_product = Product(**data)
     db.session.add(new_product)
