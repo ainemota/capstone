@@ -81,4 +81,4 @@ class Address(db.Model):
                 $BODY$
                 LANGUAGE sql;
         """
-        # db.session.ad
+        db.session.execute(query)
