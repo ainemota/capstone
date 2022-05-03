@@ -12,18 +12,14 @@ from app.exceptions.InvalidKeys import InvalidKeys
 @dataclass
 class Address(db.Model):
     id: str
-    state: str
-    city: str
-    street: str
+    CEP: str
     number: str
     complement: str
 
     __tablename__ = "addresses"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    state = Column(String(20))
-    city = Column(String(20))
-    street = Column(String(20))
+    CEP = Column(String, nullable=False)
     number = Column(String(8))
     complement = Column(String(20))
 
@@ -34,7 +30,7 @@ class Address(db.Model):
     
     @staticmethod
     def validate_keys(data, update=False):
-        expecte_keys_set = {"state", "city", "street", "number", "complement"}
+        expecte_keys_set = {"CEP", "number", "complement"}
         received_keys_set = set(data.keys())
 
         if update:

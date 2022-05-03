@@ -20,7 +20,7 @@ def create_address():
 
 
 def addresses():
-    addresses = Address.query.order_by("state").all()
+    addresses = Address.query.order_by("id").all()
 
     return {"addresses": addresses}, HTTPStatus.OK
 
