@@ -8,6 +8,7 @@ from app.exceptions.InvalidId import InvalidId
 
 from app.exceptions.InvalidKeys import InvalidKeys
 
+
 @dataclass
 class Address(db.Model):
     id: str
