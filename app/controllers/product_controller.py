@@ -1,6 +1,3 @@
-# TO DO 
-# caso o endereco nao seja enviado usar o endereco do usuario
-
 from http import HTTPStatus
 from itertools import product
 from flask import request
