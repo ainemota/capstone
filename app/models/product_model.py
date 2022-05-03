@@ -17,7 +17,7 @@ class Product(db.Model):
     status: str
     price: float
     address: Address
-    # locator_id: str
+    locator_id: str
     # room: Room
 
     __tablename__ = "products"
@@ -27,8 +27,9 @@ class Product(db.Model):
     description = Column(Text)
     status = Column(String(15))
     price = Column(Float)
-    # room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     address_id = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=True)
+    locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     address = relationship("Address", backref="products")
 
     @staticmethod
@@ -71,7 +72,7 @@ class Product(db.Model):
     @staticmethod
     def update(data, product):
         for key, value in data.items():
-            setattr(product, key, value)
+                setattr(product, key, value)
         
         db.session.add(product)
         db.session.commit()
