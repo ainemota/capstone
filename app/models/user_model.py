@@ -6,7 +6,7 @@ from app.configs.database import db
 from dataclasses import dataclass
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, validate
+from sqlalchemy.orm import relationship, validates
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.address_model import Address
 
@@ -40,7 +40,7 @@ class UserModel(db.Model):
     def verify_password(self, password_to_compare):
         return check_password_hash(self.password_hash, password_to_compare)
 
-    @validate("name", "email", "password", "address_id", "address")
+    @validates("name", "email", "password", "address_id", "address")
     def check_types(self, key, value):
         if key == "name" and type(value) != str:
             raise TypeError
