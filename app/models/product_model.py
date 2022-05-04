@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
 from app.configs.database import db
 from dataclasses import dataclass
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, validates
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
@@ -30,6 +30,27 @@ class Product(db.Model):
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
+    @validates("name", "description", "status", "price", "room_id", "locator_id")
+    def check_types(self, key, value):
+        if key == "name" and type(value) != str:
+            raise TypeError
+
+        if key == "description" and type(value) != str:
+            raise TypeError
+
+        if key == "status" and type(value) != str:
+            raise TypeError
+
+        if key == "price" and type(value) != float:
+            raise TypeError
+
+        if key == "room_id" and type(value) != int:
+            raise TypeError
+
+        if key == "locator_id" and type(value) != str:
+            raise TypeError
+
+        return value
     @staticmethod
     def validate_keys(data: dict, update=False):
         expected_keys_set = {"name", "description", "status", "price", "address_id"}
