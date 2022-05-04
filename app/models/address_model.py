@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.exceptions.InvalidId import InvalidId
-
+from sqlalchemy.orm import relationship
 from app.exceptions.InvalidKeys import InvalidKeys
 
 
@@ -23,6 +23,9 @@ class Address(db.Model):
     CEP = Column(String, nullable=False)
     number = Column(String(8))
     complement = Column(String(20))
+
+    user = relationship("UserModel", cascade="all, delete-orphan")
+    room = relationship("RoomModel", cascade="all, delete-orphan")
 
     def create(self):
         session = current_app.db.session
