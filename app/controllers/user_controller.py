@@ -3,6 +3,7 @@ from http import HTTPStatus
 from flask import current_app, jsonify, request
 from sqlalchemy.orm import Session, Query
 from app.exceptions.AlreadyExists import AlreadyExists
+from app.models.address_model import Address
 from app.models.user_model import UserModel
 from flask_jwt_extended import create_access_token, jwt_required
 
@@ -24,14 +25,18 @@ def retrive():
     data = request.get_json()
 
     try:
-        user = UserModel(**data)
-
-        session.add(user)
-        session.commit()
-
+        UserModel.validate_email(data)
+        
+        if "address" in data.keys():
+            data = UserModel.create_user_address(data)
+        
     except AlreadyExists as e:
         return e.message, HTTPStatus.CONFLICT
 
+    user = UserModel(**data)
+    session.add(user)
+    session.commit()
+    
     return jsonify(user), HTTPStatus.CREATED
 
 

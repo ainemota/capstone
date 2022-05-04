@@ -1,3 +1,4 @@
+from logging import addLevelName
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -38,8 +39,18 @@ class UserModel(db.Model):
         return check_password_hash(self.password_hash, password_to_compare)
 
     @classmethod
-    def validate_email(cls, userEmail):
-        email_exists = cls.query.filter_by(email=userEmail).first()
+    def validate_email(cls, data):
+        user_email = data['email']
+        email_exists = cls.query.filter_by(email=user_email).first()
 
         if email_exists:
             raise AlreadyExists("email")
+    
+    @staticmethod
+    def create_user_address(data):
+        address = data.pop("address")
+
+        Address.validate_CEP(address)
+        new_address = Address(**address)
+
+        return data

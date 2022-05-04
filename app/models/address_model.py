@@ -4,6 +4,7 @@ from app.configs.database import db
 from dataclasses import dataclass
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
+from app.exceptions.AlreadyExists import AlreadyExists
 from app.exceptions.InvalidId import InvalidId
 
 from app.exceptions.InvalidKeys import InvalidKeys
@@ -28,6 +29,13 @@ class Address(db.Model):
         session.add(self)
         session.commit()
     
+    @staticmethod
+    def validate_CEP(data):
+        valid_address = Address.query.filter_by(CEP=data['CEP']).first()
+
+        if valid_address:
+            raise AlreadyExists("CEP")
+
     @staticmethod
     def validate_keys(data, update=False):
         expecte_keys_set = {"CEP", "number", "complement"}
