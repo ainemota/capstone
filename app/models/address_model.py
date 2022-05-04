@@ -5,8 +5,9 @@ from dataclasses import dataclass
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from app.exceptions.AlreadyExists import AlreadyExists
-from app.exceptions.InvalidId import InvalidId
-from sqlalchemy.orm import validates
+from app.exceptions.InvalidType import InvalidType
+
+from sqlalchemy.orm import relationship, validates
 from app.exceptions.InvalidKeys import InvalidKeys
 
 
@@ -24,16 +25,20 @@ class Address(db.Model):
     number = Column(String(8))
     complement = Column(String(20))
 
+
+    user = relationship("UserModel", cascade="all, delete-orphan")
+    room = relationship("RoomModel", cascade="all, delete-orphan")
+
     @validates("CEP", "number", "complement")
     def check_types(self, key, value):
         if key == "CEP" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "number" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "complement" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         return value
 
