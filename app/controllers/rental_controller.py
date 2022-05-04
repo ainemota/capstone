@@ -1,5 +1,8 @@
+from flask import request
+
+
 def create_rental():
-    pass
+    data = request.get_json()
 
 
 def user_rentals(user_id):

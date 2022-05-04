@@ -1,4 +1,5 @@
 from dataclasses  import dataclass
+from marshmallow import validates
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Float, ForeignKey, Integer, DateTime
 from app.configs.database import db
@@ -28,3 +29,28 @@ class Rental(db.Model):
     lessee = relationship("UserModel", backref="rentals")
     room = relationship("RoomModel", backref="rentals")
     product = relationship("Product", backref="rentals")
+
+    @validates("lessee_id", "product_id", "room_id", "start_date", "end_date", "lease_price_unit", "quantity")
+    def check_types(self, key, value):
+        if key == "lessee_id" and type(value) != str:
+            raise TypeError
+
+        if key == "room_id" and type(value) != int:
+            raise TypeError
+
+        if key == "product_id" and type(value) != int:
+            raise TypeError
+
+        if key == "start_date" and type(value) != str:
+            raise TypeError
+
+        if key == "end_date" and type(value) != str:
+            raise TypeError
+
+        if key == "lease_price_unit" and type(value) != float:
+            raise TypeError
+
+        if key == "quantity" and type(value) != int:
+            raise TypeError
+
+        return value
