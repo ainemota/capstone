@@ -29,7 +29,6 @@ class RoomModel(db.Model):
         ForeignKey("addresses.id"),
         nullable=False
     )
-    address = relationship("Address", cascade="all, delete-orphan")
 
     def create(self):
         session = db.session()

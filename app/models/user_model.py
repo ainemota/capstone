@@ -6,7 +6,8 @@ from app.configs.database import db
 from dataclasses import dataclass
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import relationship, validates
+
+from sqlalchemy.orm import validates
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.address_model import Address
 
@@ -16,7 +17,7 @@ class UserModel(db.Model):
     id: str
     name: str
     email: str
-    address: Address
+    address_id: Address
 
     __tablename__ = "users"
 
@@ -27,7 +28,6 @@ class UserModel(db.Model):
     address_id = db.Column(
         UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=False
     )
-    address = relationship("Address", cascade="all, delete-orphan")
 
     @property
     def password(self):
@@ -54,7 +54,7 @@ class UserModel(db.Model):
         if key == "address_id" and type(value) != str:
             raise TypeError
         
-        if key == "address" and type(value) != list:
+        if key == "address" and type(value) != dict:
             raise TypeError
 
         return value
