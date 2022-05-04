@@ -6,6 +6,7 @@ from app.configs.database import db
 from dataclasses import dataclass
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy.orm import validates
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.address_model import Address

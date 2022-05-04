@@ -6,7 +6,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.exceptions.InvalidId import InvalidId
-from sqlalchemy.orm import relationship
+
+from sqlalchemy.orm import relationship, validates
 from app.exceptions.InvalidKeys import InvalidKeys
 
 
@@ -24,8 +25,22 @@ class Address(db.Model):
     number = Column(String(8))
     complement = Column(String(20))
 
+
     user = relationship("UserModel", cascade="all, delete-orphan")
     room = relationship("RoomModel", cascade="all, delete-orphan")
+
+    @validates("CEP", "number", "complement")
+    def check_types(self, key, value):
+        if key == "CEP" and type(value) != str:
+            raise TypeError
+
+        if key == "number" and type(value) != str:
+            raise TypeError
+
+        if key == "complement" and type(value) != str:
+            raise TypeError
+
+        return value
 
     def create(self):
         session = current_app.db.session
@@ -93,3 +108,4 @@ class Address(db.Model):
                 LANGUAGE sql;
         """
         db.session.execute(query)
+
