@@ -1,9 +1,9 @@
 from dataclasses  import dataclass
-from marshmallow import validates
+
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import Column, Float, ForeignKey, Integer, DateTime
 from app.configs.database import db
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, validates
 
 
 @dataclass
@@ -25,6 +25,7 @@ class Rental(db.Model):
     start_date = Column(DateTime, nullable=False)
     end_date = Column(DateTime, nullable=False)
     lease_price_unit = Column(Float, nullable=False)
+    quantity = Column(Integer, nullable=False)
 
     lessee = relationship("UserModel", backref="rentals")
     room = relationship("RoomModel", backref="rentals")
