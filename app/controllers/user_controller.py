@@ -2,6 +2,7 @@ from datetime import timedelta
 from http import HTTPStatus
 from flask import current_app, jsonify, request
 from sqlalchemy.orm import Session, Query
+from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.user_model import UserModel
 from flask_jwt_extended import create_access_token, jwt_required
 
@@ -28,9 +29,8 @@ def retrive():
         session.add(user)
         session.commit()
 
-    except:
-        # depurar os tipos de erros; colocar nas exceptions fazer o pull.
-        return {"error": "email já existe."}, HTTPStatus.CONFLICT
+    except AlreadyExists as e:
+        return e.message, HTTPStatus.CONFLICT
 
     return jsonify(user), HTTPStatus.CREATED
 

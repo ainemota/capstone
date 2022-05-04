@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
+from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.address_model import Address
 
 
@@ -15,6 +16,7 @@ class UserModel(db.Model):
     name: str
     email: str
     address: Address
+
     __tablename__ = "users"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
@@ -34,3 +36,10 @@ class UserModel(db.Model):
 
     def verify_password(self, password_to_compare):
         return check_password_hash(self.password_hash, password_to_compare)
+
+    @classmethod
+    def validate_email(cls, userEmail):
+        email_exists = cls.query.filter_by(email=userEmail).first()
+
+        if email_exists:
+            raise AlreadyExists("email")
