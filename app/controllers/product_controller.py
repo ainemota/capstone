@@ -1,6 +1,3 @@
-# TO DO 
-# caso o endereco nao seja enviado usar o endereco do usuario
-
 from http import HTTPStatus
 from itertools import product
 from flask import request
@@ -9,18 +6,17 @@ from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
 from app.models.product_model import Product
+from flask_jwt_extended import jwt_required
 
 
+@jwt_required()
 def create_product():
     data = request.get_json()
 
     try:
-        data = Product.validate_address(data)
         Product.validate_keys(data)
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST
-    except InvalidId as e:
-        return e.message, HTTPStatus.NOT_FOUND
 
     new_product = Product(**data)
     db.session.add(new_product)
@@ -35,6 +31,7 @@ def products():
     return {"products": products}, HTTPStatus.OK
 
 
+@jwt_required()
 def update_product(product_id):
     data = request.get_json()
 
@@ -50,6 +47,7 @@ def update_product(product_id):
     return {"updated_product": product}, HTTPStatus.OK
 
 
+@jwt_required()
 def delete_product(product_id):
     try: 
         product = Product.find_and_validate_id(product_id)

@@ -23,7 +23,7 @@ def upgrade():
     sa.Column('title', sa.String(length=150), nullable=False),
     sa.Column('description', sa.String(length=300), nullable=False),
     sa.Column('status', sa.Boolean(), nullable=False),
-    sa.Column('locator_id', postgresql.UUID(as_uuid=True), nullable=True),
+    sa.Column('locator_id', sa.Integer, nullable=True),
     sa.Column('address_id', postgresql.UUID(as_uuid=True), nullable=False),
     sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
     sa.ForeignKeyConstraint(['locator_id'], ['users.id'], ),
