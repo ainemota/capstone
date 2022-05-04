@@ -6,6 +6,7 @@ from dataclasses import dataclass
 from sqlalchemy.orm import relationship, backref, validates
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
+from app.exceptions.InvalidType import InvalidType
 from app.models.address_model import Address
 from app.models.room_model import RoomModel
 
@@ -33,22 +34,22 @@ class Product(db.Model):
     @validates("name", "description", "status", "price", "room_id", "locator_id")
     def check_types(self, key, value):
         if key == "name" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "description" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "status" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "price" and type(value) != float:
-            raise TypeError
+            raise InvalidType(key, "float")
 
         if key == "room_id" and type(value) != int:
-            raise TypeError
+            raise InvalidType(key, "int")
 
         if key == "locator_id" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         return value
     @staticmethod
