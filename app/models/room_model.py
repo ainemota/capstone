@@ -4,7 +4,7 @@ from app.configs.database import db
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, relationship
 from dataclasses import dataclass
 
 
@@ -27,9 +27,9 @@ class RoomModel(db.Model):
     address_id = Column(
         UUID(as_uuid=True),
         ForeignKey("addresses.id"),
-        nullable=False,
-        cascade="all, delete-orphan",
+        nullable=False
     )
+    address = relationship("Address", cascade="all, delete-orphan")
 
     def create(self):
         session = db.session()
