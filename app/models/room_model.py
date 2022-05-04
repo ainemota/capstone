@@ -7,6 +7,8 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import validates, relationship
 from dataclasses import dataclass
 
+from app.exceptions.InvalidType import InvalidType
+
 
 @dataclass
 class RoomModel(db.Model):
@@ -54,15 +56,15 @@ class RoomModel(db.Model):
     @validates("title", "description", "status", "products")
     def check_types(self, key, value):
         if key == "title" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "description" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "status" and type(value) != bool:
-            raise TypeError
+            raise InvalidType(key, "bool")
 
         if key == "products" and type(value) != bool:
-            raise TypeError
+            raise InvalidType(key, "bool")
 
         return value
