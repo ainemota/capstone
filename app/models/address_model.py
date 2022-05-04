@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.exceptions.InvalidId import InvalidId
-
+from sqlalchemy.orm import validates
 from app.exceptions.InvalidKeys import InvalidKeys
 
 
@@ -23,6 +23,19 @@ class Address(db.Model):
     CEP = Column(String, nullable=False)
     number = Column(String(8))
     complement = Column(String(20))
+
+    @validates("CEP", "number", "complement")
+    def check_types(self, key, value):
+        if key == "CEP" and type(value) != str:
+            raise TypeError
+
+        if key == "number" and type(value) != str:
+            raise TypeError
+
+        if key == "complement" and type(value) != str:
+            raise TypeError
+
+        return value
 
     def create(self):
         session = current_app.db.session
@@ -90,3 +103,4 @@ class Address(db.Model):
                 LANGUAGE sql;
         """
         db.session.execute(query)
+
