@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session, Query
 from app.exceptions.AlreadyExists import AlreadyExists
 from app.models.address_model import Address
 from app.models.user_model import UserModel
-from flask_jwt_extended import create_access_token, jwt_required
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash
 
 
 @jwt_required()
@@ -27,9 +28,12 @@ def retrive():
     try:
         UserModel.validate_email(data)
         
-        if "address" in data.keys():
+        if type(data['address']) == dict:
             data = UserModel.create_user_address(data)
-        
+        else:
+            address_id = data.pop("address")
+            data['address_id'] = address_id
+
     except AlreadyExists as e:
         return e.message, HTTPStatus.CONFLICT
 
@@ -44,19 +48,14 @@ def login():
     session: Session = current_app.db.session
     data = request.get_json()
 
-    data_2 = {
-        "email": data["email"],
-        "password_hash": data["password"]
-    }
-
-    user: UserModel = session.query(UserModel).filter_by(email=data_2["email"]).first()
+    user: UserModel = session.query(UserModel).filter_by(email=data["email"]).first()
 
     if not user:
         return {"error": "usuário não encontrado."}, HTTPStatus.NOT_FOUND
 
-    if user.verify_password(data_2["password_hash"]):
+    if user.verify_password(data["password"]):
         accessToken = create_access_token(identity=user, expires_delta=timedelta(minutes=60))
-        return jsonify({"accessToken": accessToken}), HTTPStatus.OK
+        return {"accessToken": accessToken}, HTTPStatus.OK
     else:
         return {"error": "Email ou Senha inválidos!"}, HTTPStatus.UNAUTHORIZED
 
@@ -98,4 +97,10 @@ def delete_user(id: int):
     return {"msg": f"user {user.name} foi deletado!"}, HTTPStatus.OK
 
 
+@jwt_required
+def get_self_user():
+    self_id = get_jwt_identity()
 
+    self = UserModel.query.get(self_id)
+
+    return {"self_user": self}, HTTPStatus.OK

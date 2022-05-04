@@ -52,11 +52,9 @@ class UserModel(db.Model):
         if key == "password" and type(value) != str:
             raise InvalidType(key, "str")
 
-        if key == "address_id" and type(value) != str:
-            raise InvalidType(key, "str")
-        
-        if key == "address" and type(value) != dict:
-            raise InvalidType(key, "dict")
+        if key == "address":
+            if type(value) != dict and type(value) != str:
+                raise InvalidType(key, "str")
 
         return value
 
