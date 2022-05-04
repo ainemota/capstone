@@ -25,7 +25,6 @@ class Address(db.Model):
     number = Column(String(8))
     complement = Column(String(20))
 
-
     user = relationship("UserModel", cascade="all, delete-orphan")
     room = relationship("RoomModel", cascade="all, delete-orphan")
 

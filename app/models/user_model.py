@@ -1,3 +1,4 @@
+import uuid
 from logging import addLevelName
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
@@ -51,7 +52,7 @@ class UserModel(db.Model):
         if key == "password" and type(value) != str:
             raise TypeError
 
-        if key == "address_id" and type(value) != str:
+        if key == "address_id" and type(value) != uuid.UUID:
             raise TypeError
         
         if key == "address" and type(value) != dict:

@@ -6,11 +6,14 @@ from app.configs.database import db
 from flask import request, jsonify
 from sqlalchemy.orm import Session
 
+from app.models.category_model import CategoryModel
 from app.models.room_model import RoomModel
 from app.models.address_model import Address
 from app.exceptions.InvalidId import InvalidId
 
 from ipdb import set_trace
+
+from app.models.rooms_categories_model import RoomsCategoriesModel
 
 
 @jwt_required()
@@ -34,14 +37,24 @@ def post_room():
         if is_available:
             return {"error": "Name already exists"}
 
-        # REFATORAR QUANDO HOUVER ALTERAÇÃO NO ADDRESS
         address = Address(
-            street=data["address"]["street"], city=data["address"]["city"]
+            CEP=data["address"]["CEP"], number=data["address"]["number"], complement=data["address"]["complement"]
         )
 
         address.create()
         room.address_id = address.id
         room.create()
+
+        if "categories" in data:
+            for category in data["categories"]:
+                category_database = session.query(CategoryModel).filter(CategoryModel.name == category).first()
+
+                if not category_database:
+                    category_database = CategoryModel(name=category, description="")
+                    category_database.create()
+
+                rooms_categories = RoomsCategoriesModel(category_id=category_database.id, rooms_id=room.id)
+                rooms_categories.create()
 
         return jsonify(room), HTTPStatus.CREATED
 
@@ -51,7 +64,7 @@ def post_room():
             "body_request": {
                 "title": "",
                 "description": "",
-                "address": {"city": "", "street": ""},
+                "address": {"CEP": "", "number": "", "complement": ""},
                 "status": True,
             },
         }, HTTPStatus.BAD_REQUEST
