@@ -66,6 +66,7 @@ def post_room():
                 "description": "",
                 "address": {"CEP": "", "number": "", "complement": ""},
                 "status": True,
+                "categories": []
             },
         }, HTTPStatus.BAD_REQUEST
 

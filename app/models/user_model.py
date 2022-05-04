@@ -10,6 +10,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy.orm import validates
 from app.exceptions.AlreadyExists import AlreadyExists
+from app.exceptions.InvalidType import InvalidType
 from app.models.address_model import Address
 
 
@@ -44,19 +45,17 @@ class UserModel(db.Model):
     @validates("name", "email", "password", "address_id", "address")
     def check_types(self, key, value):
         if key == "name" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "email" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "password" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
-        if key == "address_id" and type(value) != uuid.UUID:
-            raise TypeError
-        
-        if key == "address" and type(value) != dict:
-            raise TypeError
+        if key == "address":
+            if type(value) != dict and type(value) != str:
+                raise InvalidType(key, "str")
 
         return value
 
@@ -79,4 +78,3 @@ class UserModel(db.Model):
         data["address_id"] = new_address.id
 
         return data
-

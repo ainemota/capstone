@@ -67,3 +67,9 @@ def specific_product(product_id):
         return e.message, HTTPStatus.NOT_FOUND
     
     return {"product": product}, HTTPStatus.OK
+
+
+def available_products():
+    available_products = Product.query.filter_by(status="disponivel").all()
+
+    return {"available_products": available_products}, HTTPStatus.OK

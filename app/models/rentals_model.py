@@ -5,6 +5,8 @@ from sqlalchemy import Column, Float, ForeignKey, Integer, DateTime
 from app.configs.database import db
 from sqlalchemy.orm import relationship, validates
 
+from app.exceptions.InvalidType import InvalidType
+
 
 @dataclass
 class Rental(db.Model):
@@ -34,24 +36,24 @@ class Rental(db.Model):
     @validates("lessee_id", "product_id", "room_id", "start_date", "end_date", "lease_price_unit", "quantity")
     def check_types(self, key, value):
         if key == "lessee_id" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "room_id" and type(value) != int:
-            raise TypeError
+            raise InvalidType(key, "int")
 
         if key == "product_id" and type(value) != int:
-            raise TypeError
+            raise InvalidType(key, "int")
 
         if key == "start_date" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "end_date" and type(value) != str:
-            raise TypeError
+            raise InvalidType(key, "str")
 
         if key == "lease_price_unit" and type(value) != float:
-            raise TypeError
+            raise InvalidType(key, "float")
 
         if key == "quantity" and type(value) != int:
-            raise TypeError
+            raise InvalidType(key, "int")
 
         return value
