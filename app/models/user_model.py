@@ -24,7 +24,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(80), nullable=False, unique=True)
     password_hash = db.Column(db.String, nullable=True)
     address_id = db.Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=False)
-    address = relationship("Address")
+    address = relationship("Address", cascade="all, delete-orphan")
 
     @property
     def password(self):
