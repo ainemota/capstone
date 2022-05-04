@@ -18,7 +18,7 @@ class Product(db.Model):
     status: str
     price: float
     locator_id: str
-    room: RoomModel
+    room_id: int
 
     __tablename__ = "products"
 
