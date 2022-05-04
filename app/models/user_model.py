@@ -54,7 +54,7 @@ class UserModel(db.Model):
         if key == "address_id" and type(value) != str:
             raise TypeError
         
-        if key == "address" and type(value) != list:
+        if key == "address" and type(value) != dict:
             raise TypeError
 
         return value
