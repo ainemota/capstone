@@ -22,3 +22,5 @@ def init_app(app: Flask):
     from app.models.address_model import Address
     from app.models.product_model import Product
     from app.models.room_model import RoomModel
+    from app.models.category_model import CategoryModel
+    from app.models.rooms_categories_model import RoomsCategoriesModel
