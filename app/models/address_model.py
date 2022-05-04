@@ -4,27 +4,38 @@ from app.configs.database import db
 from dataclasses import dataclass
 from sqlalchemy.dialects.postgresql import UUID
 from uuid import uuid4
+from app.exceptions.AlreadyExists import AlreadyExists
 from app.exceptions.InvalidId import InvalidId
-
+from sqlalchemy.orm import validates
 from app.exceptions.InvalidKeys import InvalidKeys
+
 
 @dataclass
 class Address(db.Model):
     id: str
-    state: str
-    city: str
-    street: str
+    CEP: str
     number: str
     complement: str
 
     __tablename__ = "addresses"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid4)
-    state = Column(String(20))
-    city = Column(String(20))
-    street = Column(String(20))
+    CEP = Column(String, nullable=False)
     number = Column(String(8))
     complement = Column(String(20))
+
+    @validates("CEP", "number", "complement")
+    def check_types(self, key, value):
+        if key == "CEP" and type(value) != str:
+            raise TypeError
+
+        if key == "number" and type(value) != str:
+            raise TypeError
+
+        if key == "complement" and type(value) != str:
+            raise TypeError
+
+        return value
 
     def create(self):
         session = current_app.db.session
@@ -32,8 +43,15 @@ class Address(db.Model):
         session.commit()
     
     @staticmethod
+    def validate_CEP(data):
+        valid_address = Address.query.filter_by(CEP=data['CEP']).first()
+
+        if valid_address:
+            raise AlreadyExists("CEP")
+
+    @staticmethod
     def validate_keys(data, update=False):
-        expecte_keys_set = {"state", "city", "street", "number", "complement"}
+        expecte_keys_set = {"CEP", "number", "complement"}
         received_keys_set = set(data.keys())
 
         if update:
@@ -84,4 +102,5 @@ class Address(db.Model):
                 $BODY$
                 LANGUAGE sql;
         """
-        # db.session.ad
+        db.session.execute(query)
+

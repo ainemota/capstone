@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship, backref
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
+from app.models.room_model import RoomModel
 
 
 @dataclass
@@ -16,9 +17,8 @@ class Product(db.Model):
     description: str
     status: str
     price: float
-    address: Address
     locator_id: str
-    # room: Room
+    room_id: int
 
     __tablename__ = "products"
 
@@ -27,10 +27,8 @@ class Product(db.Model):
     description = Column(Text)
     status = Column(String(15))
     price = Column(Float)
-    # room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
-    address_id = Column(UUID(as_uuid=True), ForeignKey("addresses.id"), nullable=True)
+    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
-    address = relationship("Address", backref="products")
 
     @staticmethod
     def validate_keys(data: dict, update=False):
@@ -47,18 +45,6 @@ class Product(db.Model):
                 list_exp_keys = list(expected_keys_set)
                 list_rec_keys = list(received_keys_set)
                 raise InvalidKeys(expectedKeys=list_exp_keys, receivedKeys=list_rec_keys)
-
-    @staticmethod
-    def validate_address(data: dict):
-        if 'address_id' in data.keys():
-            Address.find_and_validate_id(data['address_id'])
-            return data
-        else:
-            address = data.pop('address')
-            product_address = Address(**address)
-            product_address.create()
-            data['address_id'] = product_address.id
-            return data
 
     @classmethod
     def find_and_validate_id(cls, product_id):
