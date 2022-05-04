@@ -4,6 +4,7 @@ from app.routes.categories_blueprint import bp_categories
 from app.routes.products_blueprint import bp as bp_products
 from app.routes.addresses_blueprint import bp as bp_addresses
 from app.routes.users_blueprint import bp as bp_users
+from app.routes.rentals_blueprint import bp as bp_rentals
 
 
 def init_app(app):
@@ -12,3 +13,4 @@ def init_app(app):
     app.register_blueprint(bp_addresses)
     app.register_blueprint(bp_rooms)
     app.register_blueprint(bp_categories)
+    app.register_blueprint(bp_rentals)
