@@ -18,7 +18,7 @@ class Rental(db.Model):
     __tablename__ = "rentals"
 
     rental_id = Column(Integer, primary_key=True) 
-    lessee_id = Column(UUID(ass_uuid=True), ForeignKey("users.id"), nullable=False)
+    lessee_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=True)
     start_date = Column(DateTime, nullable=False)
