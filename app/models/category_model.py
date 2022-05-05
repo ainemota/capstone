@@ -1,7 +1,8 @@
 from app.configs.database import db
 from dataclasses import dataclass
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, Session
+from app.exceptions.AlreadyExists import AlreadyExists
 
 
 @dataclass
@@ -18,6 +19,16 @@ class CategoryModel(db.Model):
 
     def create(self):
         session = db.session()
+        session.add(self)
+        session.commit()
+
+    def check_if_exist(self, category):
+        session: Session = db.session()
+        is_available = session.query(CategoryModel).filter(CategoryModel.name == category).first()
+
+        if not is_available:
+            raise AlreadyExists
+
         session.add(self)
         session.commit()
 

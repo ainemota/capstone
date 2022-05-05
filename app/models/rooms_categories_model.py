@@ -9,3 +9,8 @@ class RoomsCategoriesModel(db.Model):
     id = Column(Integer, primary_key=True)
     category_id = Column(Integer, ForeignKey("categories.id"))
     rooms_id = Column(Integer, ForeignKey("rooms.id"))
+
+    def create(self):
+        session = db.session()
+        session.add(self)
+        session.commit()

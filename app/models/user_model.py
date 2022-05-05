@@ -1,3 +1,4 @@
+import uuid
 from logging import addLevelName
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
@@ -77,4 +78,3 @@ class UserModel(db.Model):
         data["address_id"] = new_address.id
 
         return data
-
