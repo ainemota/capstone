@@ -71,7 +71,7 @@ def specific_product(product_id):
     
     return {"product": product}, HTTPStatus.OK
 
-
+@jwt_required
 def available_products():
     available_products = Product.query.filter_by(status="disponivel").all()
 
