@@ -77,6 +77,6 @@ def specific(product_id):
 
 @jwt_required
 def available():
-    available_products = Product.query.filter_by(status="disponivel").all()
+    available_products = Product.query.filter_by(available=True).all()
 
     return {"available_products": available_products}, HTTPStatus.OK
