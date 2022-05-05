@@ -10,7 +10,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @jwt_required()
-def create_product():
+def create():
     data = request.get_json()
     
     user = get_jwt_identity()
@@ -27,6 +27,7 @@ def create_product():
   
     return {"product_created": new_product}, HTTPStatus.CREATED
 
+
 @jwt_required
 def products():
     products = Product.query.order_by("id").all()
@@ -35,12 +36,14 @@ def products():
 
 
 @jwt_required()
-def update_product(product_id):
+def update(product_id):
     data = request.get_json()
+    user = get_jwt_identity()
 
     try:
         Product.validate_keys(data, update=True)
-        product = Product.find_and_validate_id(product_id)
+        product: Product= Product.find_and_validate_id(product_id)
+        product.validate_user(user['id'])
         Product.update(data, product)
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST
@@ -51,7 +54,7 @@ def update_product(product_id):
 
 
 @jwt_required()
-def delete_product(product_id):
+def delete(product_id):
     try: 
         product = Product.find_and_validate_id(product_id)
     except InvalidId as e:
@@ -63,7 +66,7 @@ def delete_product(product_id):
     return {}, HTTPStatus.NO_CONTENT
 
 
-def specific_product(product_id):
+def specific(product_id):
     try: 
         product = Product.find_and_validate_id(product_id)
     except InvalidId as e:
@@ -71,8 +74,9 @@ def specific_product(product_id):
     
     return {"product": product}, HTTPStatus.OK
 
+
 @jwt_required
-def available_products():
+def available():
     available_products = Product.query.filter_by(status="disponivel").all()
 
     return {"available_products": available_products}, HTTPStatus.OK

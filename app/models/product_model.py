@@ -7,6 +7,7 @@ from sqlalchemy.orm import relationship, backref, validates
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.exceptions.InvalidType import InvalidType
+from app.exceptions.InvalidUser import InvalidUser
 from app.models.address_model import Address
 from app.models.room_model import RoomModel
 
@@ -30,6 +31,10 @@ class Product(db.Model):
     price = Column(Float)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
+
+    def validate_user(self, user_id):
+        if self.locator_id != user_id:
+            raise InvalidUser
 
     @validates("name", "description", "status", "price", "room_id")
     def check_types(self, key, value):
