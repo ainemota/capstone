@@ -10,6 +10,7 @@ from app.exceptions.InvalidType import InvalidType
 from app.exceptions.InvalidUser import InvalidUser
 from app.models.address_model import Address
 from app.models.room_model import RoomModel
+from app.models.products_categories_model import ProductCategorieModel
 
 
 @dataclass
@@ -27,11 +28,13 @@ class Product(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(20))
     description = Column(Text)
-    available = Column(Boolean)
+    available = Column(Boolean, nullable=False)
     price = Column(Float)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
+    categories = relationship("CategoryModel", secondary=products_categories, backref="products")
+   
     def validate_user(self, user_id):
         if self.locator_id != user_id:
             raise InvalidUser
