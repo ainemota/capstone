@@ -8,7 +8,7 @@ class ProductCategorieModel(db.Model):
 
     id = Column(Integer, primary_key=True)
     product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
 
     def create(self):
         session = db.session()

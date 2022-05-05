@@ -24,7 +24,9 @@ def create():
     new_product = Product(**data)
     db.session.add(new_product)
     db.session.commit()
-  
+    
+    Product.validate_create_categories()
+    
     return {"product_created": new_product}, HTTPStatus.CREATED
 
 
