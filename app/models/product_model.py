@@ -35,7 +35,7 @@ class Product(db.Model):
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
     categories = relationship(
-        "CategoryModel", secondary=ProductCategorieModel, backref="products"
+        "CategoryModel", secondary="products_categories", backref="products"
     )
 
     def validate_user(self, user_id):
