@@ -28,7 +28,7 @@ def create():
     return {"product_created": new_product}, HTTPStatus.CREATED
 
 
-@jwt_required
+@jwt_required()
 def products():
     products = Product.query.order_by("id").all()
 
