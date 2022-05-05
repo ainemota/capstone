@@ -31,7 +31,7 @@ class Product(db.Model):
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
-    @validates("name", "description", "status", "price", "room_id", "locator_id")
+    @validates("name", "description", "status", "price", "room_id")
     def check_types(self, key, value):
         if key == "name" and type(value) != str:
             raise InvalidType(key, "str")
@@ -54,7 +54,7 @@ class Product(db.Model):
         return value
     @staticmethod
     def validate_keys(data: dict, update=False):
-        expected_keys_set = {"name", "description", "status", "price", "address_id"}
+        expected_keys_set = {"name", "description", "status", "price", "locator_id"}
         received_keys_set = set(data.keys())
 
         if update:

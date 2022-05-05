@@ -6,12 +6,15 @@ from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.models.address_model import Address
 from app.models.product_model import Product
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
 @jwt_required()
 def create_product():
     data = request.get_json()
+    
+    user = get_jwt_identity()
+    data['locator_id'] = user['id']
 
     try:
         Product.validate_keys(data)
@@ -24,7 +27,7 @@ def create_product():
   
     return {"product_created": new_product}, HTTPStatus.CREATED
 
-
+@jwt_required
 def products():
     products = Product.query.order_by("id").all()
 
