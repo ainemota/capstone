@@ -26,7 +26,7 @@ def post_room():
         room = RoomModel(
             title=data["title"],
             description=data["description"],
-            status=data["status"],
+            available=data["available"],
             locator_id=user_id["id"],
         )
 
@@ -65,7 +65,7 @@ def post_room():
                 "title": "",
                 "description": "",
                 "address": {"CEP": "", "number": "", "complement": ""},
-                "status": True,
+                "available": True,
                 "categories": []
             },
         }, HTTPStatus.BAD_REQUEST
@@ -149,5 +149,14 @@ def get_by_id_room(room_id):
 
     except InvalidId as e:
         return e.message, HTTPStatus.NOT_FOUND
+
+    return jsonify(room), HTTPStatus.OK
+
+
+@jwt_required()
+def get_rooms_available():
+    session: Session = db.session()
+
+    room = session.query(RoomModel).filter(RoomModel.available).all()
 
     return jsonify(room), HTTPStatus.OK
