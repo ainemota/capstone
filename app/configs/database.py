@@ -25,3 +25,4 @@ def init_app(app: Flask):
     from app.models.category_model import CategoryModel
     from app.models.rooms_categories_model import RoomsCategoriesModel
     from app.models.rentals_model import Rental
+    from app.models.products_categories_model import ProductCategorieModel

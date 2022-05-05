@@ -1,12 +1,13 @@
 from flask import current_app
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Column, Float, ForeignKey, Integer, String, Text, Boolean
 from app.configs.database import db
 from dataclasses import dataclass
 from sqlalchemy.orm import relationship, backref, validates
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
 from app.exceptions.InvalidType import InvalidType
+from app.exceptions.InvalidUser import InvalidUser
 from app.models.address_model import Address
 from app.models.room_model import RoomModel
 
@@ -16,7 +17,7 @@ class Product(db.Model):
     id: int
     name: str
     description: str
-    status: str
+    available: bool
     price: float
     locator_id: str
     room_id: int
@@ -26,12 +27,16 @@ class Product(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(20))
     description = Column(Text)
-    status = Column(String(15))
+    available = Column(Boolean)
     price = Column(Float)
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=True)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
 
-    @validates("name", "description", "status", "price", "room_id", "locator_id")
+    def validate_user(self, user_id):
+        if self.locator_id != user_id:
+            raise InvalidUser
+
+    @validates("name", "description", "available", "price", "room_id")
     def check_types(self, key, value):
         if key == "name" and type(value) != str:
             raise InvalidType(key, "str")
@@ -39,7 +44,7 @@ class Product(db.Model):
         if key == "description" and type(value) != str:
             raise InvalidType(key, "str")
 
-        if key == "status" and type(value) != str:
+        if key == "available" and type(value) != bool:
             raise InvalidType(key, "str")
 
         if key == "price" and type(value) != float:
@@ -54,7 +59,7 @@ class Product(db.Model):
         return value
     @staticmethod
     def validate_keys(data: dict, update=False):
-        expected_keys_set = {"name", "description", "status", "price", "address_id"}
+        expected_keys_set = {"name", "description", "available", "price", "locator_id"}
         received_keys_set = set(data.keys())
 
         if update:

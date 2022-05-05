@@ -16,7 +16,7 @@ class RoomModel(db.Model):
     title: str
     description: str
     categories: list
-    status: bool
+    available: bool
     address: dict
     locator: dict
 
@@ -25,7 +25,7 @@ class RoomModel(db.Model):
     id = Column(Integer, primary_key=True)
     title = Column(String(150), nullable=False, unique=True)
     description = Column(String(300), nullable=False)
-    status = Column(Boolean, nullable=False)
+    available = Column(Boolean, nullable=False)
     locator_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
     address_id = Column(
         UUID(as_uuid=True),
@@ -58,7 +58,7 @@ class RoomModel(db.Model):
 
         return True
 
-    @validates("title", "description", "status", "products")
+    @validates("title", "description", "available", "products")
     def check_types(self, key, value):
         if key == "title" and type(value) != str:
             raise InvalidType(key, "str")
@@ -66,7 +66,7 @@ class RoomModel(db.Model):
         if key == "description" and type(value) != str:
             raise InvalidType(key, "str")
 
-        if key == "status" and type(value) != bool:
+        if key == "available" and type(value) != bool:
             raise InvalidType(key, "bool")
 
         if key == "products" and type(value) != bool:
