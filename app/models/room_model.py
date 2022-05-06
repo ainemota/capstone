@@ -17,8 +17,8 @@ class RoomModel(db.Model):
     description: str
     categories: list
     available: bool
-    address: dict
     locator: dict
+    address_id: str
 
     __tablename__ = "rooms"
 
@@ -35,7 +35,6 @@ class RoomModel(db.Model):
 
     categories = relationship("CategoryModel", secondary="rooms_categories", backref="rooms")
     locator = relationship("UserModel", backref="rooms")
-    address = relationship("Address", backref="rooms")
 
     def create(self):
         session = db.session()

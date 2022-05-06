@@ -31,7 +31,7 @@ class Rental(db.Model):
     lease_price_unit = Column(Float, nullable=False)
     quantity = Column(Integer, nullable=False)
 
-    lessee = relationship("UserModel", backref="rentals")
+    lessee = relationship("UserModel", back_populates="rentals")
     room = relationship("RoomModel", backref="rentals")
     product = relationship("Product", backref="rentals")
 

@@ -4,6 +4,7 @@ from flask import request
 from app.configs.database import db
 from app.exceptions.InvalidId import InvalidId
 from app.exceptions.InvalidKeys import InvalidKeys
+from app.exceptions.InvalidUser import InvalidUser
 from app.models.address_model import Address
 from app.models.product_model import Product
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -16,8 +17,11 @@ def create():
     user = get_jwt_identity()
     data['locator_id'] = user['id']
 
+
+
     try:
         Product.validate_keys(data)
+        categories = data.pop("categories")
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST
 
@@ -25,7 +29,7 @@ def create():
     db.session.add(new_product)
     db.session.commit()
     
-    Product.validate_create_categories()
+    Product.validate_create_categories(new_product.id, categories)
     
     return {"product_created": new_product}, HTTPStatus.CREATED
 
@@ -33,7 +37,7 @@ def create():
 @jwt_required()
 def products():
     products = Product.query.order_by("id").all()
-
+    print(f"{products=}")
     return {"products": products}, HTTPStatus.OK
 
 
@@ -45,12 +49,16 @@ def update(product_id):
     try:
         Product.validate_keys(data, update=True)
         product: Product= Product.find_and_validate_id(product_id)
-        product.validate_user(user['id'])
+        print(f"{product.locator_id}")
+        print(f"{user['id']}")
+        Product.validate_user(product.locator_id, user['id'])
         Product.update(data, product)
     except InvalidKeys as e:
         return e.message, HTTPStatus.BAD_REQUEST
     except InvalidId as e:
         return e.message, HTTPStatus.NOT_FOUND
+    except InvalidUser as e:
+        return e.message, HTTPStatus.UNAUTHORIZED
     
     return {"updated_product": product}, HTTPStatus.OK
 
@@ -77,7 +85,7 @@ def specific(product_id):
     return {"product": product}, HTTPStatus.OK
 
 
-@jwt_required
+@jwt_required()
 def available():
     available_products = Product.query.filter_by(available=True).all()
 

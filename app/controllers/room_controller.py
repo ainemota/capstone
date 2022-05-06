@@ -93,7 +93,10 @@ def patch_room(room_id):
     except InvalidId as e:
         return e.message, HTTPStatus.NOT_FOUND
 
-    address = session.query(Address).get(room.address_id)
+    if "address" in data.keys():
+        address = session.query(Address).get(room.address_id)
+        address.update(data["address"], address)
+        address.create()
 
     if str(room.locator_id) != user["id"]:
         return {"error": "you need to be the owner"}
@@ -107,8 +110,7 @@ def patch_room(room_id):
 
     room.update(data)
     room.create()
-    address.update(data["address"], address)
-    address.create()
+
 
     return jsonify(room), HTTPStatus.OK
 

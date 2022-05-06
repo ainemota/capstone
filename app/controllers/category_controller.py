@@ -48,7 +48,7 @@ def delete_category(category_id):
     return "", HTTPStatus.NO_CONTENT
 
 
-def get_by_name_category(name):
+def get_by_name_category(name: str):
     session: Session = db.session()
 
     category = session.query(CategoryModel).filter(CategoryModel.name == name).first()

@@ -38,8 +38,9 @@ class Product(db.Model):
         "CategoryModel", secondary="products_categories", backref="products"
     )
 
-    def validate_user(self, user_id):
-        if self.locator_id != user_id:
+    @staticmethod
+    def validate_user(product_locator, user_id):
+        if product_locator != user_id:
             raise InvalidUser
 
     @validates("name", "description", "available", "price", "room_id")
@@ -66,7 +67,7 @@ class Product(db.Model):
 
     @staticmethod
     def validate_keys(data: dict, update=False):
-        expected_keys_set = {"name", "description", "available", "price", "locator_id"}
+        expected_keys_set = {"name", "description", "available", "price", "locator_id", "categories"}
         received_keys_set = set(data.keys())
 
         if update:
@@ -104,7 +105,7 @@ class Product(db.Model):
     @staticmethod
     def validate_create_categories(product_id, categories):
         for category in categories:
-            category_product = CategoryModel.query.filter_by(name=category).first()
+            category_product = CategoryModel.query.filter_by(name=category['name']).first()
             
             if not category_product:
                 category_product = CategoryModel(name=category['name'], description="")

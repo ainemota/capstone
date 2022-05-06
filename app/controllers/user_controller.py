@@ -61,7 +61,7 @@ def login():
 
 
 @jwt_required()
-def put_users(id: int):
+def put_users(id: str):
     session: Session = current_app.db.session
     data: dict = request.get_json()
     
@@ -97,10 +97,10 @@ def delete_user(id: int):
     return {"msg": f"user {user.name} foi deletado!"}, HTTPStatus.OK
 
 
-@jwt_required
+@jwt_required()
 def get_self_user():
-    self_id = get_jwt_identity()
+    self = get_jwt_identity()
 
-    self = UserModel.query.get(self_id)
+    self = UserModel.query.get(self['id'])
 
     return {"self_user": self}, HTTPStatus.OK

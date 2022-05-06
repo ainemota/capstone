@@ -6,7 +6,7 @@ from app.models.rentals_model import Rental
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 
-@jwt_required
+@jwt_required()
 def create_rental():
     data = request.get_json()
     user = get_jwt_identity()
@@ -14,19 +14,21 @@ def create_rental():
 
     new_rental = Rental(**data)
 
+    db.session.add(new_rental)
+    db.session.commit()
     return {"rental_created": new_rental}, HTTPStatus.CREATED
 
 
 @jwt_required()
 def user_rentals():
-    data = request.get_json()
+    # data = request.get_json()
     user = get_jwt_identity()
 
-    if data:
-        date = data['start_date']
-        rentals = Rental.query.filter_by(start_date=date, lessee_id=user['id']).all()
-    else:
-        rentals = Rental.query.filter_by(lessee_id=user['id']).all()
+    # if data:
+    #     date = data['start_date']
+    #     rentals = Rental.query.filter_by(start_date=date, lessee_id=user['id']).all()
+    # else:
+    rentals = Rental.query.filter_by(lessee_id=user['id']).all()
 
     return {"data": rentals}, HTTPStatus.OK
 
