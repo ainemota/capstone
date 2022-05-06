@@ -106,7 +106,7 @@ def patch_room(room_id):
             session.query(RoomModel).filter(RoomModel.title == data["title"]).first()
         )
         if is_available:
-            return {"error": "Name already exists"}
+            return {"error": "Name already exists"}, HTTPStatus.CONFLICT
 
     room.update(data)
     room.create()
