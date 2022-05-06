@@ -6,17 +6,19 @@ from app.configs.database import db
 from sqlalchemy.orm import relationship, validates
 
 from app.exceptions.InvalidType import InvalidType
+from app.exceptions.InvalidId import InvalidId
 
 
 @dataclass
 class Rental(db.Model):
+    rental_id: int
     lessee_id: str
     room_id: int
     product_id: int
-    rental_id: int
     start_date: str
     end_date: str
     lease_price_unit: float
+    quantity: int
 
     __tablename__ = "rentals"
 
@@ -57,3 +59,12 @@ class Rental(db.Model):
             raise InvalidType(key, "int")
 
         return value
+    
+    @classmethod
+    def find_and_validate(cls,rental_id):
+        rental = cls.query.get(rental_id)
+
+        if not rental:
+            raise InvalidId(modelName="Rental")
+        else:
+            return rental
