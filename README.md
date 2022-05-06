@@ -22,7 +22,7 @@ Response - 201 CREATED
 {
 	"id": "1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed",
 	"nome": "Alice",
-	"email": "alice_maravilhas@gmail.com",
+	"email": "alice_maravilhas@gmail.com"
 }
 ```
 
@@ -46,12 +46,13 @@ Response - 200 OK
 ### GET /users
 Lista todos os usuarios cadastrados
 
-Response - 200 OK
-```json
 header:
 {
     Authorization: `Bearer{token}`
-},
+}
+
+Response - 200 OK
+```json
 {
 	"data": [
             {
@@ -71,12 +72,13 @@ header:
 ### PATCH /users/<user_id>
 Atualiza dados do usuario 
 
-Request
-```json
 header:
 {
     Authorization: `Bearer{token}`
-},
+}
+
+Request
+```json
 {
 	"nome": "Brenda",
 	"email": "brenda_po@hotmai",
@@ -99,4 +101,114 @@ Deleta a conta do usuario
 Response - 204 NO CONTENT
 
 # Addresses
+### POST /addresses
+Cadastra um novo endereço
+
+header:
+{
+    Authorization: `Bearer {token}`
+}
+
+Request
+```json
+ 
+{
+  "adressess": [
+      {
+        "CEP": "30570000",
+        "numero": "417",
+        "complemento": "Apt. 401"
+      }
+  ]
+}
+```
+Response - 201 CREATED
+```json
+{
+
+    "id": 257,
+    "CEP": "30570000",
+    "estado": "Minas Gerais",
+    "cidade": "Vila Velha",
+    "rua": "Luiz Fernandes Reis",
+    "numero": "417",
+    "complemento": "Apt. 401"
+
+}
+```
+### GET /addresses/
+Lista os endereços cadastrados
+
+header:
+{
+    Authorization: `Bearer {token}`
+}
+
+Response - 200 OK
+```json
+{ 
+    "resultados": 2,
+    "adressess": [
+                  {
+                      "id": 257,
+                      "CEP": "30570000",
+                      "estado": "Espírito Santo",
+                      "cidade": "Vila Velha",
+                      "rua": "Luiz Fernandes Reis",
+                      "numero": "417",
+                      "complemento": "Apt. 401"
+                  },
+                  {
+                      "id": 258,
+                      "CEP": "30570120",
+                      "estado": "Minas Gerais",
+                      "cidade": "Belo Horizonte",
+                      "rua": "Ladeira do amendoim",
+                      "numero": "410",
+                      "complemento": "Apt. 602"
+                  }
+              ]
+}
+```
+### PATCH /addresses/<address_id>
+Atualiza o endereço cadastrado
+
+header:
+{
+    Authorization: `Bearer {token}`
+}
+
+Request
+```json
+{
+    "CEP": "30550021",
+    "numero": 22,
+    "complemento": "Apt. 602"
+}
+```
+Response - 200 OK
+```json
+{
+    "data":
+    {
+        "CEP": "30550021",
+        "estado": "Rio de Janeiro",
+        "cidade": "Rio de Janeiro",
+        "rua": "Av Copacabana",
+        "numero": 22,
+        "complemento": "Apt. 602"
+    }
+}
+```
+### DELETE /addresses/<address_id>
+Deleta o endereço que foi cadastrado
+
+header:
+{
+    Authorization: `Bearer {token}`
+}
+
+Response - 204 NO CONTENT
+
+# Rooms
 
